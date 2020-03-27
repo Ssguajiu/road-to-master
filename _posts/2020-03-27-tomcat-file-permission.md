@@ -1,3 +1,10 @@
+---
+title:  tomcat 文件权限配置
+tags: tomcat java
+---
+
+
+
 tomcat 文件权限配置
 ===
 
@@ -31,7 +38,8 @@ tomcat 文件权限配置
 经过反复查阅[大量相关文献资料](https://tomcat.apache.org/tomcat-9.0-doc/security-howto.html)^_^,
 >File permissions should also be suitably restricted. In the .tar.gz distribution, files and directories are not world readable and the group does not have write access. On Unix like operating systems, Tomcat runs with a **default umask** of `0027` to maintain these permissions for files created while Tomcat is running (e.g. log files, expanded WARs, etc.).
 
-熟悉的剧情,同样是处于安全考虑,tomcat这个二五仔会在启动的时候再次设置`umask`为`0027`,意思就是无论你用户的设置的umask为多少,我tomcat启动的时候都会重新设置一下这个值,设置完成后在启动,这也是为啥第一步设置后新创建文件仍为`-rw-r-----`,可怜的nginx没有权限读取到那个文件,只能返回403了.
+熟悉的剧情,同样是处于安全考虑,tomcat这个二五仔会在启动的时候再次设置`umask`为`0027`,意思就是无论你用户的设置的umask为多少,我tomcat启动的时候都会重新设置一下这个值,设置完成后在启动,这也是为啥第一步设置后新创建文件仍为`-rw-r-----`,可怜的nginx没有权限读取到那个文件,只能返回403了.   
+
 找到了问题根源,解决办法:
   - 在tomcat bin目录下,新建 setenv.sh 文件(我的9.0.30下没有这个文件,手动创建),输入`export UMASK=0022`, 再次启动, 搞定.
 
